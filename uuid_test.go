@@ -50,3 +50,13 @@ func TestVersionString(t *testing.T) {
 	assert.Equal(t, Version(0b00010000).String(), "BAD_VERSION_16")
 	assert.Equal(t, Version(0b00010001).String(), "BAD_VERSION_17")
 }
+
+func TestVariant(t *testing.T) {
+	assert.Equal(t, Variant(INVALID).String(), "INVALID")
+	assert.Equal(t, Variant(RFC4122).String(), "RFC4122")
+	assert.Equal(t, Variant(RESERVED).String(), "RESERVED")
+	assert.Equal(t, Variant(MICROSOFT).String(), "MICROSOFT")
+	assert.Equal(t, Variant(FUTURE).String(), "FUTURE")
+	assert.Equal(t, Variant(5).String(), "BAD_VARIANT_5")
+	assert.Equal(t, Variant(6).String(), "BAD_VARIANT_6")
+}

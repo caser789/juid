@@ -1,6 +1,7 @@
 package uuid
 
 import (
+	"bytes"
 	"crypto/rand"
 	"fmt"
 	"io"
@@ -32,6 +33,34 @@ func (v Version) String() string {
 	return fmt.Sprintf("VERSION_%d", v)
 }
 
+// A Variant represents a UUIDs variant.
+type Variant byte
+
+// Constants returned by Variant.
+const (
+	INVALID   = iota // Invalid UUID
+	RFC4122          // The variant specified in RFC4122
+	RESERVED         // Reserved, NCS backward compatibility.
+	MICROSOFT        // Reserved, Microsoft Corporation backward compatibility.
+	FUTURE           // Reserved for future definition.
+)
+
+func (v Variant) String() string {
+	switch v {
+	case RFC4122:
+		return "RFC4122"
+	case RESERVED:
+		return "RESERVED"
+	case MICROSOFT:
+		return "MICROSOFT"
+	case FUTURE:
+		return "FUTURE"
+	case INVALID:
+		return "INVALID"
+	}
+	return fmt.Sprintf("BAD_VARIANT_%d", v)
+}
+
 // A UUID is a 128 bit (16 byte) Universal Unique IDentifier as defined in RFC
 // 4122.
 type UUID []byte
@@ -51,4 +80,9 @@ func (uuid UUID) String() string {
 	b := []byte(uuid)
 	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
 		b[:4], b[4:6], b[6:8], b[8:10], b[10:])
+}
+
+// Equal returns true if uuid1 and uuid2 are equal.
+func Equal(uuid1, uuid2 UUID) bool {
+	return bytes.Equal(uuid1, uuid2)
 }
