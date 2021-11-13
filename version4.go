@@ -1,7 +1,5 @@
 package uuid
 
-type UUID []byte
-
 func NewRandom() UUID {
 	uuid := make([]byte, 16)
 	randomBits(uuid)
