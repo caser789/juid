@@ -1,8 +1,13 @@
 package uuid
 
+import (
+	"net"
+)
+
 var (
-	ifname string // name of interface being used
-	nodeID []byte // hardware for version 1 UUIDs
+	interfaces []net.Interface // cached list of interfaces
+	ifname     string          // name of interface being used
+	nodeID     []byte          // hardware for version 1 UUIDs
 )
 
 // NodeID returns the 6 byte node id encoded in uuid.  It returns nil if uuid is
@@ -36,4 +41,59 @@ func setNodeID(id []byte) bool {
 	}
 	copy(nodeID, id)
 	return true
+}
+
+// NodeID returns a slice of a copy of the current Node ID, setting the Node ID
+// if not already set.
+func NodeID() []byte {
+	if nodeID == nil {
+		SetNodeInterface("")
+	}
+	nid := make([]byte, 6)
+	copy(nid, nodeID)
+	return nid
+}
+
+// SetNodeInterface selects the hardware address to be used for Version 1 UUIDs.
+// If name is "" then the first usable interface found will be used or a random
+// Node ID will be generated.  If a named interface cannot be found then false
+// is returned.
+//
+// SetNodeInterface never fails when name is "".
+func SetNodeInterface(name string) bool {
+	if interfaces == nil {
+		var err error
+		interfaces, err = net.Interfaces()
+		if err != nil && name != "" {
+			return false
+		}
+	}
+
+	for _, ifs := range interfaces {
+		if len(ifs.HardwareAddr) >= 6 && (name == "" || name == ifs.Name) {
+			if setNodeID(ifs.HardwareAddr) {
+				ifname = ifs.Name
+				return true
+			}
+		}
+	}
+
+	// We found no interfaces with a valid hardware address.  If name
+	// does not specify a specific interface generate a random Node ID
+	// (section 4.1.6)
+	if name == "" {
+		if nodeID == nil {
+			nodeID = make([]byte, 6)
+		}
+		randomBits(nodeID)
+		return true
+	}
+	return false
+}
+
+// NodeInterface returns the name of the interface from which the NodeID was
+// derived.  The interface "user" is returned if the NodeID was set by
+// SetNodeID.
+func NodeInterface() string {
+	return ifname
 }
