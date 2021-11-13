@@ -78,3 +78,12 @@ func TestRandomUUID(t *testing.T) {
 		}
 	}
 }
+
+func TestUUIDDecode(t *testing.T) {
+	for x := 1; x < 32; x++ {
+		uuid1 := NewRandom()
+		uuid2 := Decode(uuid1.String())
+
+		assert.Equal(t, uuid1, uuid2)
+	}
+}

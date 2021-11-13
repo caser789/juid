@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
+	"strings"
 )
 
 var rander = rand.Reader
@@ -82,6 +83,17 @@ func (uuid UUID) String() string {
 		b[:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
+// URN returns the RFC 2141 URN form of uuid,
+// urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx,  or "" if uuid is invalid.
+func (uuid UUID) URN() string {
+	if uuid == nil || len(uuid) != 16 {
+		return ""
+	}
+	b := []byte(uuid)
+	return fmt.Sprintf("urn:uuid:%08x-%04x-%04x-%04x-%012x",
+		b[:4], b[4:6], b[6:8], b[8:10], b[10:])
+}
+
 // Variant returns the variant encoded in uuid.  It returns INVALID if
 // uuid is invalid.
 func (uuid UUID) Variant() Variant {
@@ -113,4 +125,35 @@ func (uuid UUID) Version() (Version, bool) {
 // Equal returns true if uuid1 and uuid2 are equal.
 func Equal(uuid1, uuid2 UUID) bool {
 	return bytes.Equal(uuid1, uuid2)
+}
+
+// Decode decodes s into a UUID or returns nil.  Both the UUID form of
+// xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx and
+// urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx are decoded.
+func Decode(s string) UUID {
+	if len(s) == 36+9 {
+		if strings.ToLower(s[:9]) != "urn:uuid:" {
+			return nil
+		}
+		s = s[9:]
+	} else if len(s) != 36 {
+		return nil
+	}
+	if s[8] != '-' || s[13] != '-' || s[18] != '-' || s[23] != '-' {
+		return nil
+	}
+	uuid := make([]byte, 16)
+	for i, x := range []int{
+		0, 2, 4, 6,
+		9, 11,
+		14, 16,
+		19, 21,
+		24, 26, 28, 30, 32, 34} {
+		if v, ok := xtob(s[x:]); !ok {
+			return nil
+		} else {
+			uuid[i] = v
+		}
+	}
+	return uuid
 }
