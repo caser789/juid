@@ -82,6 +82,34 @@ func (uuid UUID) String() string {
 		b[:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
+// Variant returns the variant encoded in uuid.  It returns INVALID if
+// uuid is invalid.
+func (uuid UUID) Variant() Variant {
+	if len(uuid) != 16 {
+		return INVALID
+	}
+	switch {
+	case (uuid[8] & 0xc0) == 0x80:
+		return RFC4122
+	case (uuid[8] & 0xe0) == 0xc0:
+		return MICROSOFT
+	case (uuid[8] & 0xe0) == 0xe0:
+		return FUTURE
+	default:
+		return RESERVED
+	}
+	panic("unreachable")
+}
+
+// Version returns the verison of uuid.  It returns false if uuid is not
+// valid.
+func (uuid UUID) Version() (Version, bool) {
+	if len(uuid) != 16 {
+		return 0, false
+	}
+	return Version(uuid[6] >> 4), true
+}
+
 // Equal returns true if uuid1 and uuid2 are equal.
 func Equal(uuid1, uuid2 UUID) bool {
 	return bytes.Equal(uuid1, uuid2)

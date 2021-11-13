@@ -60,3 +60,21 @@ func TestVariant(t *testing.T) {
 	assert.Equal(t, Variant(5).String(), "BAD_VARIANT_5")
 	assert.Equal(t, Variant(6).String(), "BAD_VARIANT_6")
 }
+
+func TestRandomUUID(t *testing.T) {
+	m := make(map[string]bool)
+	for x := 1; x < 32; x++ {
+		uuid := NewRandom()
+		s := uuid.String()
+		if m[s] {
+			t.Errorf("NewRandom returned duplicated UUID %s\n", s)
+		}
+		m[s] = true
+		if uuid.Variant() != RFC4122 {
+			t.Errorf("Random UUID is variant %d\n", uuid.Variant())
+		}
+		if v, _ := uuid.Version(); v != 4 {
+			t.Errorf("Random UUID of version %s\n", v)
+		}
+	}
+}
