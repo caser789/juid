@@ -8,11 +8,11 @@ import (
 
 // Well known Name Space IDs and UUIDs
 var (
-	NameSpace_DNS  = Decode("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
-	NameSpace_URL  = Decode("6ba7b811-9dad-11d1-80b4-00c04fd430c8")
-	NameSpace_OID  = Decode("6ba7b812-9dad-11d1-80b4-00c04fd430c8")
-	NameSpace_X500 = Decode("6ba7b814-9dad-11d1-80b4-00c04fd430c8")
-	NIL            = Decode("00000000-0000-0000-0000-000000000000")
+	NameSpace_DNS  = Parse("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
+	NameSpace_URL  = Parse("6ba7b811-9dad-11d1-80b4-00c04fd430c8")
+	NameSpace_OID  = Parse("6ba7b812-9dad-11d1-80b4-00c04fd430c8")
+	NameSpace_X500 = Parse("6ba7b814-9dad-11d1-80b4-00c04fd430c8")
+	NIL            = Parse("00000000-0000-0000-0000-000000000000")
 )
 
 // NewHash returns a new UUID dervied from the hash of space concatenated with

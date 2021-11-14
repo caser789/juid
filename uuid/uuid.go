@@ -127,10 +127,10 @@ func Equal(uuid1, uuid2 UUID) bool {
 	return bytes.Equal(uuid1, uuid2)
 }
 
-// Decode decodes s into a UUID or returns nil.  Both the UUID form of
+// Parse decodes s into a UUID or returns nil.  Both the UUID form of
 // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx and
 // urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx are decoded.
-func Decode(s string) UUID {
+func Parse(s string) UUID {
 	if len(s) == 36+9 {
 		if strings.ToLower(s[:9]) != "urn:uuid:" {
 			return nil

@@ -80,10 +80,10 @@ func TestRandomUUID(t *testing.T) {
 	}
 }
 
-func TestUUIDDecode(t *testing.T) {
+func TestUUIDParse(t *testing.T) {
 	for x := 1; x < 32; x++ {
 		uuid1 := NewRandom()
-		uuid2 := Decode(uuid1.String())
+		uuid2 := Parse(uuid1.String())
 
 		assert.Equal(t, uuid1, uuid2)
 	}
@@ -106,7 +106,7 @@ func TestCoding(t *testing.T) {
 		t.Errorf("%x: urn is %s, expected %s\n", data, v, urn)
 	}
 
-	uuid := Decode(text)
+	uuid := Parse(text)
 	if !Equal(uuid, data) {
 		t.Errorf("%s: decoded to %s, expected %s\n", text, uuid, data)
 	}
@@ -120,7 +120,7 @@ func TestNew(t *testing.T) {
 			t.Errorf("New returned duplicated UUID %s\n", s)
 		}
 		m[s] = true
-		uuid := Decode(s)
+		uuid := Parse(s)
 		if uuid == nil {
 			t.Errorf("New returned %q which does not decode\n", s)
 			continue
@@ -187,9 +187,9 @@ var tests = []test{
 }
 
 func testTest(t *testing.T, in string, tt test) {
-	uuid := Decode(in)
+	uuid := Parse(in)
 	if ok := (uuid != nil); ok != tt.isuuid {
-		t.Errorf("Decode(%s) got %v expected %v\b", in, ok, tt.isuuid)
+		t.Errorf("Parse(%s) got %v expected %v\b", in, ok, tt.isuuid)
 	}
 	if uuid == nil {
 		return
