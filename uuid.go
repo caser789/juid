@@ -9,6 +9,14 @@ import (
 	"strings"
 )
 
+// Array is a pass-by-value UUID that can be used as an effecient key in a map.
+type Array [16]byte
+
+// UUID converts uuid into a slice.
+func (uuid Array) UUID() UUID {
+	return uuid[:]
+}
+
 var rander = rand.Reader
 
 // SetRand sets the random number generator to r, which implents io.Reader.
@@ -133,6 +141,17 @@ func (uuid UUID) Version() (Version, bool) {
 		return 0, false
 	}
 	return Version(uuid[6] >> 4), true
+}
+
+// Array returns an array representation of uuid that can be used as a map key.
+// Array panics if uuid is not valid.
+func (uuid UUID) Array() Array {
+	if len(uuid) != 16 {
+		panic("invalid uuid")
+	}
+	var a Array
+	copy(a[:], uuid)
+	return a
 }
 
 // Equal returns true if uuid1 and uuid2 are equal.
