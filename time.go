@@ -107,22 +107,16 @@ func setClockSequence(seq int) {
 // Time returns the time in 100s of nanoseconds since 15 Oct 1582 encoded in
 // uuid.  It returns false if uuid is not valid.  The time is only well defined
 // for version 1 and 2 UUIDs.
-func (uuid UUID) Time() (Time, bool) {
-	if len(uuid) != 16 {
-		return 0, false
-	}
+func (uuid UUID) Time() Time {
 	time := int64(binary.BigEndian.Uint32(uuid[0:4]))
 	time |= int64(binary.BigEndian.Uint16(uuid[4:6])) << 32
 	time |= int64(binary.BigEndian.Uint16(uuid[6:8])&0xfff) << 48
-	return Time(time), true
+	return Time(time)
 }
 
 // ClockSequence returns the clock sequence encoded in uuid.  It returns false
 // if uuid is not valid.  The clock sequence is only well defined for version 1
 // and 2 UUIDs.
-func (uuid UUID) ClockSequence() (int, bool) {
-	if len(uuid) != 16 {
-		return 0, false
-	}
-	return int(binary.BigEndian.Uint16(uuid[8:10])) & 0x3fff, true
+func (uuid UUID) ClockSequence() int {
+	return int(binary.BigEndian.Uint16(uuid[8:10])) & 0x3fff
 }
