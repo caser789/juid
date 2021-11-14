@@ -76,7 +76,7 @@ func New() string {
 // String returns the string form of uuid, xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 // , or "" if uuid is invalid.
 func (uuid UUID) String() string {
-	if uuid == nil || len(uuid) != 16 {
+	if len(uuid) != 16 {
 		return ""
 	}
 	var buf [36]byte
@@ -95,7 +95,7 @@ func (uuid UUID) String() string {
 // URN returns the RFC 2141 URN form of uuid,
 // urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx,  or "" if uuid is invalid.
 func (uuid UUID) URN() string {
-	if uuid == nil || len(uuid) != 16 {
+	if len(uuid) != 16 {
 		return ""
 	}
 	var buf [36 + 9]byte
