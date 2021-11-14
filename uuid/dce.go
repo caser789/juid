@@ -11,21 +11,21 @@ type Domain byte
 
 // Domain constants for DCE Security (Version 2) UUIDs.
 const (
-	DOMAIN_PERSON = 0
-	DOMAIN_GROUP  = 1
-	DOMAIN_ORG    = 2
+	Person Domain = 0
+	Group         = 1
+	Org           = 2
 )
 
 func (d Domain) String() string {
 	switch d {
-	case DOMAIN_PERSON:
-		return "DOMAIN_PERSON"
-	case DOMAIN_GROUP:
-		return "DOMAIN_GROUP"
-	case DOMAIN_ORG:
-		return "DOMAIN_ORG"
+	case Person:
+		return "Person"
+	case Group:
+		return "Group"
+	case Org:
+		return "Org"
 	}
-	return fmt.Sprintf("DOMAIN_%d", d)
+	return fmt.Sprintf("Domain%d", d)
 }
 
 // Id returns the id for a Version 2 UUID or false.
@@ -68,7 +68,7 @@ func NewDCESecurity(domain Domain, id uint32) UUID {
 //
 //  NewDCESecurity(DOMAIN_PERSON, uint32(os.Getuid()))
 func NewDCEPerson() UUID {
-	return NewDCESecurity(DOMAIN_PERSON, uint32(os.Getuid()))
+	return NewDCESecurity(Person, uint32(os.Getuid()))
 }
 
 // NewDCEPerson returns a DCE Security (Version 2) UUID in the group
@@ -76,5 +76,5 @@ func NewDCEPerson() UUID {
 //
 //  NewDCESecurity(DOMAIN_GROUP, uint32(os.Getgid()))
 func NewDCEGroup() UUID {
-	return NewDCESecurity(DOMAIN_GROUP, uint32(os.Getgid()))
+	return NewDCESecurity(Group, uint32(os.Getgid()))
 }

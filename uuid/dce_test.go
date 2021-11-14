@@ -7,11 +7,11 @@ import (
 )
 
 func TestDomainString(t *testing.T) {
-	assert.Equal(t, Domain(DOMAIN_PERSON).String(), "DOMAIN_PERSON")
-	assert.Equal(t, Domain(DOMAIN_GROUP).String(), "DOMAIN_GROUP")
-	assert.Equal(t, Domain(DOMAIN_ORG).String(), "DOMAIN_ORG")
-	assert.Equal(t, Domain(4).String(), "DOMAIN_4")
-	assert.Equal(t, Domain(5).String(), "DOMAIN_5")
+	assert.Equal(t, Domain(Person).String(), "Person")
+	assert.Equal(t, Domain(Group).String(), "Group")
+	assert.Equal(t, Domain(Org).String(), "Org")
+	assert.Equal(t, Domain(4).String(), "Domain4")
+	assert.Equal(t, Domain(5).String(), "Domain5")
 }
 
 func TestUUIDId(t *testing.T) {
@@ -68,40 +68,40 @@ func TestUUIDDomain(t *testing.T) {
 				1, 2, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  DOMAIN_PERSON,
+			expectedDomain:  Person,
 			expectedSuccess: false,
 		},
 		{
-			name: "test valid version 2 domain - DOMAIN_PERSON",
+			name: "test valid version 2 domain - Person",
 			uuid: UUID([]byte{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000000, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  DOMAIN_PERSON,
+			expectedDomain:  Person,
 			expectedSuccess: true,
 		},
 		{
-			name: "test valid version 2 domain - DOMAIN_GROUP",
+			name: "test valid version 2 domain - Group",
 			uuid: UUID([]byte{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000001, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  DOMAIN_GROUP,
+			expectedDomain:  Group,
 			expectedSuccess: true,
 		},
 		{
-			name: "test valid version 2 domain - DOMAIN_ORG",
+			name: "test valid version 2 domain - Org",
 			uuid: UUID([]byte{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000010, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  DOMAIN_ORG,
+			expectedDomain:  Org,
 			expectedSuccess: true,
 		},
 		{
@@ -152,6 +152,6 @@ func testDCE(t *testing.T, name string, uuid UUID, domain Domain, id uint32) {
 
 func TestDCE(t *testing.T) {
 	testDCE(t, "NewDCESecurity", NewDCESecurity(42, 12345678), 42, 12345678)
-	testDCE(t, "NewDCEPerson", NewDCEPerson(), DOMAIN_PERSON, uint32(os.Getuid()))
-	testDCE(t, "NewDCEGroup", NewDCEGroup(), DOMAIN_GROUP, uint32(os.Getgid()))
+	testDCE(t, "NewDCEPerson", NewDCEPerson(), Person, uint32(os.Getuid()))
+	testDCE(t, "NewDCEGroup", NewDCEGroup(), Group, uint32(os.Getgid()))
 }
