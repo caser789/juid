@@ -1,6 +1,7 @@
 package uuid
 
 import (
+	"encoding/binary"
 	"fmt"
 )
 
@@ -24,4 +25,12 @@ func (d Domain) String() string {
 		return "DOMAIN_ORG"
 	}
 	return fmt.Sprintf("DOMAIN_%d", d)
+}
+
+// Id returns the id for a Version 2 UUID or false.
+func (uuid UUID) Id() (uint32, bool) {
+	if v, _ := uuid.Version(); v != 2 {
+		return 0, false
+	}
+	return binary.BigEndian.Uint32(uuid[0:4]), true
 }
