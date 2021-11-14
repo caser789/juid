@@ -2,7 +2,7 @@ package uuid
 
 import (
 	"encoding/json"
-    "reflect"
+	"reflect"
 	"testing"
 )
 
@@ -13,7 +13,7 @@ func TestJSON(t *testing.T) {
 		ID1 UUID
 		ID2 UUID
 	}
-    s1 := S{ID1: testUUID}
+	s1 := S{ID1: testUUID}
 	data, err := json.Marshal(&s1)
 	if err != nil {
 		t.Fatal(err)
