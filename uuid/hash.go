@@ -3,19 +3,8 @@ package uuid
 import (
 	"crypto/md5"
 	"crypto/sha1"
+    "hash"
 )
-
-// A Hash defines a hashing function.
-type Hash interface {
-	// Reset resets the Hash to its initial state.
-	Reset()
-
-	Write([]byte) (int, error)
-
-	// Sum appends the current hash to b and returns the resulting slice.
-	// It does not change the underlying hash state.
-	Sum([]byte) []byte
-}
 
 // Well known Name Space IDs and UUIDs
 var (
@@ -31,7 +20,7 @@ var (
 // first 16 bytes of the hash are used to form the UUID.  The version of the
 // UUID will be the lower 4 bits of version.  NewHash is used to implement
 // NewMD5 and NewSHA1.
-func NewHash(h Hash, space UUID, data []byte, version int) UUID {
+func NewHash(h hash.Hash, space UUID, data []byte, version int) UUID {
 	h.Reset()
 	h.Write(space)
 	h.Write([]byte(data))
