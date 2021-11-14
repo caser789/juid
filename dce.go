@@ -34,3 +34,11 @@ func (uuid UUID) Id() (uint32, bool) {
 	}
 	return binary.BigEndian.Uint32(uuid[0:4]), true
 }
+
+// Domain returns the domain for a Version 2 UUID or false.
+func (uuid UUID) Domain() (Domain, bool) {
+	if v, _ := uuid.Version(); v != 2 {
+		return 0, false
+	}
+	return Domain(uuid[9]), true
+}
