@@ -17,6 +17,12 @@ func (uuid Array) UUID() UUID {
 	return uuid[:]
 }
 
+// String returns the string representation of uuid,
+// xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
+func (uuid Array) String() string {
+	return uuid.UUID().String()
+}
+
 var rander = rand.Reader
 
 // SetRand sets the random number generator to r, which implents io.Reader.
