@@ -2,6 +2,7 @@ package uuid
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
@@ -85,5 +86,126 @@ func TestUUIDDecode(t *testing.T) {
 		uuid2 := Decode(uuid1.String())
 
 		assert.Equal(t, uuid1, uuid2)
+	}
+}
+
+func TestCoding(t *testing.T) {
+	text := "7d444840-9dc0-11d1-b245-5ffdce74fad2"
+	urn := "urn:uuid:7d444840-9dc0-11d1-b245-5ffdce74fad2"
+	data := UUID{
+		0x7d, 0x44, 0x48, 0x40,
+		0x9d, 0xc0,
+		0x11, 0xd1,
+		0xb2, 0x45,
+		0x5f, 0xfd, 0xce, 0x74, 0xfa, 0xd2,
+	}
+	if v := data.String(); v != text {
+		t.Errorf("%x: encoded to %s, expected %s\n", data, v, text)
+	}
+	if v := data.URN(); v != urn {
+		t.Errorf("%x: urn is %s, expected %s\n", data, v, urn)
+	}
+
+	uuid := Decode(text)
+	if !Equal(uuid, data) {
+		t.Errorf("%s: decoded to %s, expected %s\n", text, uuid, data)
+	}
+}
+
+func TestNew(t *testing.T) {
+	m := make(map[string]bool)
+	for x := 1; x < 32; x++ {
+		s := New()
+		if m[s] {
+			t.Errorf("New returned duplicated UUID %s\n", s)
+		}
+		m[s] = true
+		uuid := Decode(s)
+		if uuid == nil {
+			t.Errorf("New returned %q which does not decode\n", s)
+			continue
+		}
+		if v, _ := uuid.Version(); v != 4 {
+			t.Errorf("Random UUID of version %s\n", v)
+		}
+		if uuid.Variant() != RFC4122 {
+			t.Errorf("Random UUID is variant %d\n", uuid.Variant())
+		}
+	}
+}
+
+type test struct {
+	in      string
+	version Version
+	variant Variant
+	isuuid  bool
+}
+
+var tests = []test{
+	{"f47ac10b-58cc-0372-8567-0e02b2c3d479", 0, RFC4122, true},
+	{"f47ac10b-58cc-1372-8567-0e02b2c3d479", 1, RFC4122, true},
+	{"f47ac10b-58cc-2372-8567-0e02b2c3d479", 2, RFC4122, true},
+	{"f47ac10b-58cc-3372-8567-0e02b2c3d479", 3, RFC4122, true},
+	{"f47ac10b-58cc-4372-8567-0e02b2c3d479", 4, RFC4122, true},
+	{"f47ac10b-58cc-5372-8567-0e02b2c3d479", 5, RFC4122, true},
+	{"f47ac10b-58cc-6372-8567-0e02b2c3d479", 6, RFC4122, true},
+	{"f47ac10b-58cc-7372-8567-0e02b2c3d479", 7, RFC4122, true},
+	{"f47ac10b-58cc-8372-8567-0e02b2c3d479", 8, RFC4122, true},
+	{"f47ac10b-58cc-9372-8567-0e02b2c3d479", 9, RFC4122, true},
+	{"f47ac10b-58cc-a372-8567-0e02b2c3d479", 10, RFC4122, true},
+	{"f47ac10b-58cc-b372-8567-0e02b2c3d479", 11, RFC4122, true},
+	{"f47ac10b-58cc-c372-8567-0e02b2c3d479", 12, RFC4122, true},
+	{"f47ac10b-58cc-d372-8567-0e02b2c3d479", 13, RFC4122, true},
+	{"f47ac10b-58cc-e372-8567-0e02b2c3d479", 14, RFC4122, true},
+	{"f47ac10b-58cc-f372-8567-0e02b2c3d479", 15, RFC4122, true},
+
+	{"urn:uuid:f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, RESERVED, true},
+	{"URN:UUID:f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-1567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-2567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-3567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-4567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-5567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-6567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-7567-0e02b2c3d479", 4, RESERVED, true},
+	{"f47ac10b-58cc-4372-8567-0e02b2c3d479", 4, RFC4122, true},
+	{"f47ac10b-58cc-4372-9567-0e02b2c3d479", 4, RFC4122, true},
+	{"f47ac10b-58cc-4372-a567-0e02b2c3d479", 4, RFC4122, true},
+	{"f47ac10b-58cc-4372-b567-0e02b2c3d479", 4, RFC4122, true},
+	{"f47ac10b-58cc-4372-c567-0e02b2c3d479", 4, MICROSOFT, true},
+	{"f47ac10b-58cc-4372-d567-0e02b2c3d479", 4, MICROSOFT, true},
+	{"f47ac10b-58cc-4372-e567-0e02b2c3d479", 4, FUTURE, true},
+	{"f47ac10b-58cc-4372-f567-0e02b2c3d479", 4, FUTURE, true},
+
+	{"f47ac10b158cc-5372-a567-0e02b2c3d479", 0, INVALID, false},
+	{"f47ac10b-58cc25372-a567-0e02b2c3d479", 0, INVALID, false},
+	{"f47ac10b-58cc-53723a567-0e02b2c3d479", 0, INVALID, false},
+	{"f47ac10b-58cc-5372-a56740e02b2c3d479", 0, INVALID, false},
+	{"f47ac10b-58cc-5372-a567-0e02-2c3d479", 0, INVALID, false},
+	{"g47ac10b-58cc-4372-a567-0e02b2c3d479", 0, INVALID, false},
+}
+
+func testTest(t *testing.T, in string, tt test) {
+	uuid := Decode(in)
+	if ok := (uuid != nil); ok != tt.isuuid {
+		t.Errorf("Decode(%s) got %v expected %v\b", in, ok, tt.isuuid)
+	}
+	if uuid == nil {
+		return
+	}
+
+	if v := uuid.Variant(); v != tt.variant {
+		t.Errorf("Variant(%s) got %d expected %d\b", in, v, tt.variant)
+	}
+	if v, _ := uuid.Version(); v != tt.version {
+		t.Errorf("Version(%s) got %d expected %d\b", in, v, tt.version)
+	}
+}
+
+func TestUUID(t *testing.T) {
+	for _, tt := range tests {
+		testTest(t, tt.in, tt)
+		testTest(t, strings.ToUpper(tt.in), tt)
 	}
 }
