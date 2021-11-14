@@ -20,7 +20,6 @@ func TestClockSeqRace(t *testing.T) {
 	duration := time.Minute
 
 	done := make(chan struct{})
-	defer close(done)
 
 	ch := make(chan UUID, 10000)
 	ncpu := runtime.NumCPU()
@@ -55,6 +54,7 @@ func TestClockSeqRace(t *testing.T) {
 		}
 		uuid_map[s] = true
 		if time.Since(start) > duration {
+			close(done)
 			return
 		}
 		cnt++
