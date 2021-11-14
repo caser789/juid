@@ -19,7 +19,7 @@ const (
 )
 
 var (
-	mu        sync.Mutex
+	timeMu    sync.Mutex
 	lasttime  uint64 // last time we returned
 	clock_seq uint16 // clock sequence for this run
 
@@ -39,8 +39,8 @@ func (t Time) UnixTime() (sec, nsec int64) {
 // adjusts the clock sequence as needed.  An error is returned if the current
 // time cannot be determined.
 func GetTime() (Time, uint16, error) {
-	defer mu.Unlock()
-	mu.Lock()
+	defer timeMu.Unlock()
+	timeMu.Lock()
 	return getTime()
 }
 
@@ -71,8 +71,8 @@ func getTime() (Time, uint16, error) {
 // ClockSequence, GetTime, or NewUUID.  (section 4.2.1.1) sequence is generated
 // for
 func ClockSequence() int {
-	defer mu.Unlock()
-	mu.Lock()
+	defer timeMu.Unlock()
+	timeMu.Lock()
 	return clockSequence()
 }
 
@@ -86,8 +86,8 @@ func clockSequence() int {
 // SetClockSeq sets the clock sequence to the lower 14 bits of seq.  Setting to
 // -1 causes a new sequence to be generated.
 func SetClockSequence(seq int) {
-	defer mu.Unlock()
-	mu.Lock()
+	defer timeMu.Unlock()
+	timeMu.Lock()
 	setClockSequence(seq)
 }
 
