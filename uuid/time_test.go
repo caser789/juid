@@ -3,6 +3,7 @@ package uuid
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestClockSequence(t *testing.T) {
@@ -44,12 +45,20 @@ func TestSetClockSequence(t *testing.T) {
 }
 
 func TestClockSeq(t *testing.T) {
+	// Fake time.Now for this test to return a monotonically advancing time; restore it at end.
+	defer func(orig func() time.Time) { timeNow = orig }(timeNow)
+	monTime := time.Now()
+	timeNow = func() time.Time {
+		monTime = monTime.Add(1 * time.Second)
+		return monTime
+	}
+
 	SetClockSequence(-1)
 	uuid1 := NewUUID()
 	uuid2 := NewUUID()
 
-	if clockSeq(t, uuid1) == clockSeq(t, uuid2) {
-		t.Errorf("clock sequence %d == %d\n", clockSeq(t, uuid1), clockSeq(t, uuid2))
+	if clockSeq(t, uuid1) != clockSeq(t, uuid2) {
+		t.Errorf("clock sequence %d != %d\n", clockSeq(t, uuid1), clockSeq(t, uuid2))
 	}
 
 	SetClockSequence(-1)

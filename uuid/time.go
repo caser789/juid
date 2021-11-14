@@ -16,6 +16,8 @@ const (
 var (
 	lasttime  uint64 // last time we returned
 	clock_seq uint16 // clock sequence for this run
+
+	timeNow = time.Now // for testing
 )
 
 // ClockSequence returns the current clock sequence, generating one if not
@@ -60,7 +62,7 @@ func GetTime() (Time, error) {
 	if clock_seq == 0 {
 		SetClockSequence(-1)
 	}
-	now := time.Now().UnixNano()/100 + g1582ns100
+	now := timeNow().UnixNano()/100 + g1582ns100
 	// If time has gone backwards with this clock sequence then we
 	// increment the clock sequence
 	if uint64(now) <= lasttime {
