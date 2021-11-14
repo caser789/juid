@@ -16,10 +16,9 @@ func TestDomainString(t *testing.T) {
 
 func TestUUIDId(t *testing.T) {
 	tests := []struct {
-		name            string
-		uuid            UUID
-		expectedId      uint32
-		expectedSuccess bool
+		name       string
+		uuid       UUID
+		expectedId uint32
 	}{
 		{
 			name: "test invalid version 2 id",
@@ -29,8 +28,7 @@ func TestUUIDId(t *testing.T) {
 				1, 2, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedId:      uint32(0),
-			expectedSuccess: false,
+			expectedId: uint32(0),
 		},
 		{
 			name: "test valid version 2 id",
@@ -40,25 +38,22 @@ func TestUUIDId(t *testing.T) {
 				1, 2, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedId:      uint32(1),
-			expectedSuccess: true,
+			expectedId: uint32(1),
 		},
 	}
 
 	for _, tt := range tests {
-		id, success := tt.uuid.Id()
+		id := tt.uuid.Id()
 
 		assert.Equal(t, tt.expectedId, id, tt.name)
-		assert.Equal(t, tt.expectedSuccess, success, tt.name)
 	}
 }
 
 func TestUUIDDomain(t *testing.T) {
 	tests := []struct {
-		name            string
-		uuid            UUID
-		expectedDomain  Domain
-		expectedSuccess bool
+		name           string
+		uuid           UUID
+		expectedDomain Domain
 	}{
 		{
 			name: "test invalid version 2 domain",
@@ -68,8 +63,7 @@ func TestUUIDDomain(t *testing.T) {
 				1, 2, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  Person,
-			expectedSuccess: false,
+			expectedDomain: Person,
 		},
 		{
 			name: "test valid version 2 domain - Person",
@@ -79,8 +73,7 @@ func TestUUIDDomain(t *testing.T) {
 				1, 0b00000000, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  Person,
-			expectedSuccess: true,
+			expectedDomain: Person,
 		},
 		{
 			name: "test valid version 2 domain - Group",
@@ -90,8 +83,7 @@ func TestUUIDDomain(t *testing.T) {
 				1, 0b00000001, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  Group,
-			expectedSuccess: true,
+			expectedDomain: Group,
 		},
 		{
 			name: "test valid version 2 domain - Org",
@@ -101,8 +93,7 @@ func TestUUIDDomain(t *testing.T) {
 				1, 0b00000010, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  Org,
-			expectedSuccess: true,
+			expectedDomain: Org,
 		},
 		{
 			name: "test valid version 2 domain - Domain(3)",
@@ -112,16 +103,14 @@ func TestUUIDDomain(t *testing.T) {
 				1, 0b00000011, 3, 4,
 				1, 2, 3, 4,
 			}),
-			expectedDomain:  3,
-			expectedSuccess: true,
+			expectedDomain: 3,
 		},
 	}
 
 	for _, tt := range tests {
-		domain, success := tt.uuid.Domain()
+		domain := tt.uuid.Domain()
 
 		assert.Equal(t, tt.expectedDomain, domain, tt.name)
-		assert.Equal(t, tt.expectedSuccess, success, tt.name)
 	}
 }
 
@@ -134,24 +123,19 @@ func testDCE(t *testing.T, name string, uuid UUID, domain Domain, id uint32) {
 		t.Errorf("%s: %s: expected version 2, got %s\n", name, uuid, v)
 		return
 	}
-	if v, ok := uuid.Domain(); !ok || v != domain {
-		if !ok {
-			t.Errorf("%s: %d: Domain failed\n", name, uuid)
-		} else {
-			t.Errorf("%s: %s: expected domain %d, got %d\n", name, uuid, domain, v)
-		}
+	if v := uuid.Domain(); v != domain {
+		t.Errorf("%s: %s: expected domain %d, got %d\n", name, uuid, domain, v)
 	}
-	if v, ok := uuid.Id(); !ok || v != id {
-		if !ok {
-			t.Errorf("%s: %d: Id failed\n", name, uuid)
-		} else {
-			t.Errorf("%s: %s: expected id %d, got %d\n", name, uuid, id, v)
-		}
+	if v := uuid.Id(); v != id {
+		t.Errorf("%s: %s: expected id %d, got %d\n", name, uuid, id, v)
 	}
 }
 
 func TestDCE(t *testing.T) {
-	testDCE(t, "NewDCESecurity", NewDCESecurity(42, 12345678), 42, 12345678)
-	testDCE(t, "NewDCEPerson", NewDCEPerson(), Person, uint32(os.Getuid()))
-	testDCE(t, "NewDCEGroup", NewDCEGroup(), Group, uint32(os.Getgid()))
+	u, _ := NewDCESecurity(42, 12345678)
+	testDCE(t, "NewDCESecurity", u, 42, 12345678)
+	u, _ = NewDCEPerson()
+	testDCE(t, "NewDCEPerson", u, Person, uint32(os.Getuid()))
+	u, _ = NewDCEGroup()
+	testDCE(t, "NewDCEGroup", u, Group, uint32(os.Getgid()))
 }
