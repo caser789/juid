@@ -53,13 +53,13 @@ func TestVersionString(t *testing.T) {
 }
 
 func TestVariant(t *testing.T) {
-	assert.Equal(t, Variant(INVALID).String(), "INVALID")
+	assert.Equal(t, Variant(Invalid).String(), "Invalid")
 	assert.Equal(t, Variant(RFC4122).String(), "RFC4122")
-	assert.Equal(t, Variant(RESERVED).String(), "RESERVED")
-	assert.Equal(t, Variant(MICROSOFT).String(), "MICROSOFT")
-	assert.Equal(t, Variant(FUTURE).String(), "FUTURE")
-	assert.Equal(t, Variant(5).String(), "BAD_VARIANT_5")
-	assert.Equal(t, Variant(6).String(), "BAD_VARIANT_6")
+	assert.Equal(t, Variant(Reserved).String(), "Reserved")
+	assert.Equal(t, Variant(Microsoft).String(), "Microsoft")
+	assert.Equal(t, Variant(Future).String(), "Future")
+	assert.Equal(t, Variant(5).String(), "BadVariant5")
+	assert.Equal(t, Variant(6).String(), "BadVariant6")
 }
 
 func TestRandomUUID(t *testing.T) {
@@ -159,31 +159,31 @@ var tests = []test{
 	{"f47ac10b-58cc-e372-8567-0e02b2c3d479", 14, RFC4122, true},
 	{"f47ac10b-58cc-f372-8567-0e02b2c3d479", 15, RFC4122, true},
 
-	{"urn:uuid:f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, RESERVED, true},
-	{"URN:UUID:f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-1567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-2567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-3567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-4567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-5567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-6567-0e02b2c3d479", 4, RESERVED, true},
-	{"f47ac10b-58cc-4372-7567-0e02b2c3d479", 4, RESERVED, true},
+	{"urn:uuid:f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, Reserved, true},
+	{"URN:UUID:f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-0567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-1567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-2567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-3567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-4567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-5567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-6567-0e02b2c3d479", 4, Reserved, true},
+	{"f47ac10b-58cc-4372-7567-0e02b2c3d479", 4, Reserved, true},
 	{"f47ac10b-58cc-4372-8567-0e02b2c3d479", 4, RFC4122, true},
 	{"f47ac10b-58cc-4372-9567-0e02b2c3d479", 4, RFC4122, true},
 	{"f47ac10b-58cc-4372-a567-0e02b2c3d479", 4, RFC4122, true},
 	{"f47ac10b-58cc-4372-b567-0e02b2c3d479", 4, RFC4122, true},
-	{"f47ac10b-58cc-4372-c567-0e02b2c3d479", 4, MICROSOFT, true},
-	{"f47ac10b-58cc-4372-d567-0e02b2c3d479", 4, MICROSOFT, true},
-	{"f47ac10b-58cc-4372-e567-0e02b2c3d479", 4, FUTURE, true},
-	{"f47ac10b-58cc-4372-f567-0e02b2c3d479", 4, FUTURE, true},
+	{"f47ac10b-58cc-4372-c567-0e02b2c3d479", 4, Microsoft, true},
+	{"f47ac10b-58cc-4372-d567-0e02b2c3d479", 4, Microsoft, true},
+	{"f47ac10b-58cc-4372-e567-0e02b2c3d479", 4, Future, true},
+	{"f47ac10b-58cc-4372-f567-0e02b2c3d479", 4, Future, true},
 
-	{"f47ac10b158cc-5372-a567-0e02b2c3d479", 0, INVALID, false},
-	{"f47ac10b-58cc25372-a567-0e02b2c3d479", 0, INVALID, false},
-	{"f47ac10b-58cc-53723a567-0e02b2c3d479", 0, INVALID, false},
-	{"f47ac10b-58cc-5372-a56740e02b2c3d479", 0, INVALID, false},
-	{"f47ac10b-58cc-5372-a567-0e02-2c3d479", 0, INVALID, false},
-	{"g47ac10b-58cc-4372-a567-0e02b2c3d479", 0, INVALID, false},
+	{"f47ac10b158cc-5372-a567-0e02b2c3d479", 0, Invalid, false},
+	{"f47ac10b-58cc25372-a567-0e02b2c3d479", 0, Invalid, false},
+	{"f47ac10b-58cc-53723a567-0e02b2c3d479", 0, Invalid, false},
+	{"f47ac10b-58cc-5372-a56740e02b2c3d479", 0, Invalid, false},
+	{"f47ac10b-58cc-5372-a567-0e02-2c3d479", 0, Invalid, false},
+	{"g47ac10b-58cc-4372-a567-0e02b2c3d479", 0, Invalid, false},
 }
 
 func testTest(t *testing.T, in string, tt test) {

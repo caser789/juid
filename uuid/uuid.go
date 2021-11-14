@@ -39,27 +39,27 @@ type Variant byte
 
 // Constants returned by Variant.
 const (
-	INVALID   = iota // Invalid UUID
-	RFC4122          // The variant specified in RFC4122
-	RESERVED         // Reserved, NCS backward compatibility.
-	MICROSOFT        // Reserved, Microsoft Corporation backward compatibility.
-	FUTURE           // Reserved for future definition.
+	Invalid   Variant = iota // Invalid UUID
+	RFC4122                  // The variant specified in RFC4122
+	Reserved                 // Reserved, NCS backward compatibility.
+	Microsoft                // Reserved, Microsoft Corporation backward compatibility.
+	Future                   // Reserved for future definition.
 )
 
 func (v Variant) String() string {
 	switch v {
 	case RFC4122:
 		return "RFC4122"
-	case RESERVED:
-		return "RESERVED"
-	case MICROSOFT:
-		return "MICROSOFT"
-	case FUTURE:
-		return "FUTURE"
-	case INVALID:
-		return "INVALID"
+	case Reserved:
+		return "Reserved"
+	case Microsoft:
+		return "Microsoft"
+	case Future:
+		return "Future"
+	case Invalid:
+		return "Invalid"
 	}
-	return fmt.Sprintf("BAD_VARIANT_%d", v)
+	return fmt.Sprintf("BadVariant%d", v)
 }
 
 // A UUID is a 128 bit (16 byte) Universal Unique IDentifier as defined in RFC
@@ -98,17 +98,17 @@ func (uuid UUID) URN() string {
 // uuid is invalid.
 func (uuid UUID) Variant() Variant {
 	if len(uuid) != 16 {
-		return INVALID
+		return Invalid
 	}
 	switch {
 	case (uuid[8] & 0xc0) == 0x80:
 		return RFC4122
 	case (uuid[8] & 0xe0) == 0xc0:
-		return MICROSOFT
+		return Microsoft
 	case (uuid[8] & 0xe0) == 0xe0:
-		return FUTURE
+		return Future
 	default:
-		return RESERVED
+		return Reserved
 	}
 	panic("unreachable")
 }

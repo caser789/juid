@@ -3,7 +3,7 @@ package uuid
 import (
 	"crypto/md5"
 	"crypto/sha1"
-    "hash"
+	"hash"
 )
 
 // Well known Name Space IDs and UUIDs
