@@ -115,7 +115,7 @@ func TestUUIDDomain(t *testing.T) {
 }
 
 func testDCE(t *testing.T, name string, uuid UUID, domain Domain, id uint32) {
-	if uuid == NIL {
+	if uuid == Nil {
 		t.Errorf("%s failed\n", name)
 		return
 	}

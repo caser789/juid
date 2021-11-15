@@ -120,7 +120,7 @@ func TestNew(t *testing.T) {
 		}
 		m[s] = true
 		uuid := Must(Parse(s.String()))
-		if uuid == NIL {
+		if uuid == Nil {
 			t.Errorf("New returned %q which does not decode\n", s)
 			continue
 		}
@@ -212,7 +212,7 @@ func TestUUID(t *testing.T) {
 func BenchmarkParse(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		uuid := Must(Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479"))
-		if uuid == NIL {
+		if uuid == Nil {
 			b.Fatal("invalid uuid")
 		}
 	}
@@ -226,7 +226,7 @@ func BenchmarkNew(b *testing.B) {
 
 func BenchmarkUUID_String(b *testing.B) {
 	uuid := Must(Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479"))
-	if uuid == NIL {
+	if uuid == Nil {
 		b.Fatal("invalid uuid")
 	}
 	for i := 0; i < b.N; i++ {
@@ -238,7 +238,7 @@ func BenchmarkUUID_String(b *testing.B) {
 
 func BenchmarkUUID_URN(b *testing.B) {
 	uuid := Must(Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479"))
-	if uuid == NIL {
+	if uuid == Nil {
 		b.Fatal("invalid uuid")
 	}
 	for i := 0; i < b.N; i++ {
