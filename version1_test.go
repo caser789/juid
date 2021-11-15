@@ -7,8 +7,8 @@ import (
 
 func TestVersion1(t *testing.T) {
 	for i := 0; i < 1000; i++ {
-		uuid1 := MustNewUUID()
-		uuid2 := MustNewUUID()
+		uuid1 := Must(NewUUID())
+		uuid2 := Must(NewUUID())
 
 		if uuid1 == uuid2 {
 			t.Errorf("%s:duplicate uuid\n", uuid1)

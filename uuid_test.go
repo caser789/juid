@@ -83,7 +83,7 @@ func TestRandomUUID(t *testing.T) {
 func TestUUIDParse(t *testing.T) {
 	for x := 1; x < 32; x++ {
 		uuid1 := New()
-		uuid2 := MustParse(uuid1.String())
+		uuid2 := Must(Parse(uuid1.String()))
 
 		assert.Equal(t, uuid1, uuid2)
 	}
@@ -106,7 +106,7 @@ func TestCoding(t *testing.T) {
 		t.Errorf("%x: urn is %s, expected %s\n", data, v, urn)
 	}
 
-	uuid := MustParse(text)
+	uuid := Must(Parse(text))
 
 	assert.Equal(t, uuid, data)
 }
@@ -119,7 +119,7 @@ func TestNew(t *testing.T) {
 			t.Errorf("New returned duplicated UUID %s\n", s)
 		}
 		m[s] = true
-		uuid := MustParse(s.String())
+		uuid := Must(Parse(s.String()))
 		if uuid == NIL {
 			t.Errorf("New returned %q which does not decode\n", s)
 			continue
@@ -211,7 +211,7 @@ func TestUUID(t *testing.T) {
 
 func BenchmarkParse(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		uuid := MustParse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
+		uuid := Must(Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479"))
 		if uuid == NIL {
 			b.Fatal("invalid uuid")
 		}
@@ -225,7 +225,7 @@ func BenchmarkNew(b *testing.B) {
 }
 
 func BenchmarkUUID_String(b *testing.B) {
-	uuid := MustParse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
+	uuid := Must(Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479"))
 	if uuid == NIL {
 		b.Fatal("invalid uuid")
 	}
@@ -237,7 +237,7 @@ func BenchmarkUUID_String(b *testing.B) {
 }
 
 func BenchmarkUUID_URN(b *testing.B) {
-	uuid := MustParse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
+	uuid := Must(Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479"))
 	if uuid == NIL {
 		b.Fatal("invalid uuid")
 	}
