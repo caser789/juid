@@ -7,23 +7,23 @@ import (
 )
 
 func TestClockSequence(t *testing.T) {
-	clock_seq = 0b0011111111111111
+	clockSeq = 0b0011111111111111
 	v := ClockSequence()
 	assert.Equal(t, v, 0b0011111111111111)
 
-	clock_seq = 0b0111111111111111
+	clockSeq = 0b0111111111111111
 	v = ClockSequence()
 	assert.Equal(t, v, 0b0011111111111111)
 
-	clock_seq = 0b1011111111111111
+	clockSeq = 0b1011111111111111
 	v = ClockSequence()
 	assert.Equal(t, v, 0b0011111111111111)
 
-	clock_seq = 0b1111111111111111
+	clockSeq = 0b1111111111111111
 	v = ClockSequence()
 	assert.Equal(t, v, 0b0011111111111111)
 
-	clock_seq = 0
+	clockSeq = 0
 	v = ClockSequence()
 	assert.NotEqual(t, v, 0)
 }
@@ -31,13 +31,13 @@ func TestClockSequence(t *testing.T) {
 func TestSetClockSequence(t *testing.T) {
 	lasttime = 111
 	SetClockSequence(0b0011111111111111)
-	assert.Equal(t, clock_seq, uint16(0b1011111111111111))
+	assert.Equal(t, clockSeq, uint16(0b1011111111111111))
 	assert.Equal(t, lasttime, uint64(0))
 
-	clock_seq = 0b1011111111111111
+	clockSeq = 0b1011111111111111
 	lasttime = 222
 	SetClockSequence(0b0011111111111111)
-	assert.Equal(t, clock_seq, uint16(0b1011111111111111))
+	assert.Equal(t, clockSeq, uint16(0b1011111111111111))
 	assert.Equal(t, lasttime, uint64(222))
 
 	SetClockSequence(-1)
@@ -57,8 +57,8 @@ func TestClockSeq(t *testing.T) {
 	uuid1 := Must(NewUUID())
 	uuid2 := Must(NewUUID())
 
-	if clockSeq(t, uuid1) != clockSeq(t, uuid2) {
-		t.Errorf("clock sequence %d != %d\n", clockSeq(t, uuid1), clockSeq(t, uuid2))
+	if _clockSeq(t, uuid1) != _clockSeq(t, uuid2) {
+		t.Errorf("clock sequence %d != %d\n", _clockSeq(t, uuid1), _clockSeq(t, uuid2))
 	}
 
 	SetClockSequence(-1)
@@ -66,22 +66,22 @@ func TestClockSeq(t *testing.T) {
 
 	// Just on the very off chance we generated the same sequence
 	// two times we try again.
-	if clockSeq(t, uuid1) == clockSeq(t, uuid2) {
+	if _clockSeq(t, uuid1) == _clockSeq(t, uuid2) {
 		SetClockSequence(-1)
 		uuid2 = Must(NewUUID())
 	}
-	if clockSeq(t, uuid1) == clockSeq(t, uuid2) {
-		t.Errorf("Duplicate clock sequence %d\n", clockSeq(t, uuid1))
+	if _clockSeq(t, uuid1) == _clockSeq(t, uuid2) {
+		t.Errorf("Duplicate clock sequence %d\n", _clockSeq(t, uuid1))
 	}
 
 	SetClockSequence(0x1234)
 	uuid1 = Must(NewUUID())
-	if seq := clockSeq(t, uuid1); seq != 0x1234 {
+	if seq := _clockSeq(t, uuid1); seq != 0x1234 {
 		t.Errorf("%s: expected seq 0x1234 got 0x%04x\n", uuid1, seq)
 	}
 }
 
-func clockSeq(t *testing.T, uuid UUID) int {
+func _clockSeq(t *testing.T, uuid UUID) int {
 	seq := uuid.ClockSequence()
 	return seq
 }
