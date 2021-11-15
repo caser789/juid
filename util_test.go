@@ -38,14 +38,3 @@ func Test_xvalues(t *testing.T) {
 	assert.Equal(t, xvalues['8'], uint8(0x8))
 	assert.Equal(t, xvalues['9'], uint8(0x9))
 }
-
-func Test_xtob(t *testing.T) {
-	v, yes := xtob("AB12345")
-
-	assert.Equal(t, v, uint8(0xAB))
-	assert.Equal(t, yes, true)
-
-	v, yes = xtob("AO12345")
-
-	assert.Equal(t, yes, false)
-}
