@@ -22,22 +22,22 @@ func TestUUIDId(t *testing.T) {
 	}{
 		{
 			name: "test invalid version 2 id",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 0,
 				1, 2, 0b11111111, 4,
 				1, 2, 3, 4,
 				1, 2, 3, 4,
-			}),
+			},
 			expectedId: uint32(0),
 		},
 		{
 			name: "test valid version 2 id",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 1,
 				1, 2, 0b00101111, 4,
 				1, 2, 3, 4,
 				1, 2, 3, 4,
-			}),
+			},
 			expectedId: uint32(1),
 		},
 	}
@@ -57,52 +57,52 @@ func TestUUIDDomain(t *testing.T) {
 	}{
 		{
 			name: "test invalid version 2 domain",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 0,
 				1, 2, 0b11111111, 4,
+				1, 8, 3, 4,
 				1, 2, 3, 4,
-				1, 2, 3, 4,
-			}),
-			expectedDomain: Person,
+			},
+			expectedDomain: Domain(8),
 		},
 		{
 			name: "test valid version 2 domain - Person",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000000, 3, 4,
 				1, 2, 3, 4,
-			}),
+			},
 			expectedDomain: Person,
 		},
 		{
 			name: "test valid version 2 domain - Group",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000001, 3, 4,
 				1, 2, 3, 4,
-			}),
+			},
 			expectedDomain: Group,
 		},
 		{
 			name: "test valid version 2 domain - Org",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000010, 3, 4,
 				1, 2, 3, 4,
-			}),
+			},
 			expectedDomain: Org,
 		},
 		{
 			name: "test valid version 2 domain - Domain(3)",
-			uuid: UUID([]byte{
+			uuid: UUID{
 				0, 0, 0, 0,
 				1, 2, 0b00101111, 4,
 				1, 0b00000011, 3, 4,
 				1, 2, 3, 4,
-			}),
+			},
 			expectedDomain: 3,
 		},
 	}
@@ -115,11 +115,11 @@ func TestUUIDDomain(t *testing.T) {
 }
 
 func testDCE(t *testing.T, name string, uuid UUID, domain Domain, id uint32) {
-	if uuid == nil {
+	if uuid == NIL {
 		t.Errorf("%s failed\n", name)
 		return
 	}
-	if v, _ := uuid.Version(); v != 2 {
+	if v := uuid.Version(); v != 2 {
 		t.Errorf("%s: %s: expected version 2, got %s\n", name, uuid, v)
 		return
 	}

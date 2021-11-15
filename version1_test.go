@@ -7,17 +7,17 @@ import (
 
 func TestVersion1(t *testing.T) {
 	for i := 0; i < 1000; i++ {
-		uuid1 := NewUUID()
-		uuid2 := NewUUID()
+		uuid1 := MustNewUUID()
+		uuid2 := MustNewUUID()
 
-		if Equal(uuid1, uuid2) {
+		if uuid1 == uuid2 {
 			t.Errorf("%s:duplicate uuid\n", uuid1)
 		}
 
-		if v, _ := uuid1.Version(); v != 1 {
+		if v := uuid1.Version(); v != 1 {
 			t.Errorf("%s: version %s expected 1\n", uuid1, v)
 		}
-		if v, _ := uuid2.Version(); v != 1 {
+		if v := uuid2.Version(); v != 1 {
 			t.Errorf("%s: version %s expected 1\n", uuid2, v)
 		}
 
@@ -27,22 +27,10 @@ func TestVersion1(t *testing.T) {
 			t.Errorf("Different nodes %x != %x\n", n1, n2)
 		}
 
-		t1, ok := uuid1.Time()
-		if !ok {
-			t.Errorf("%s: invalid time\n", uuid1)
-		}
-		t2, ok := uuid2.Time()
-		if !ok {
-			t.Errorf("%s: invalid time\n", uuid2)
-		}
-		q1, ok := uuid1.ClockSequence()
-		if !ok {
-			t.Errorf("%s: invalid clock sequence\n", uuid1)
-		}
-		q2, ok := uuid2.ClockSequence()
-		if !ok {
-			t.Errorf("%s: invalid clock sequence", uuid2)
-		}
+		t1 := uuid1.Time()
+		t2 := uuid2.Time()
+		q1 := uuid1.ClockSequence()
+		q2 := uuid2.ClockSequence()
 		switch {
 		case t1 == t2 && q1 == q2:
 			t.Errorf("time stopped\n")

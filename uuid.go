@@ -126,11 +126,6 @@ func MustParse(s string) UUID {
 	return u
 }
 
-// Equal returns true if uuid1 and uuid2 are equal.
-func Equal(uuid1, uuid2 UUID) bool {
-	return bytes.Equal(uuid1, uuid2)
-}
-
 // Parse decodes s into a UUID or returns nil.  Both the UUID form of
 // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx and
 // urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx are decoded.

@@ -1,7 +1,6 @@
 package uuid
 
 import (
-	"bytes"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -66,16 +65,16 @@ func TestVariant(t *testing.T) {
 func TestRandomUUID(t *testing.T) {
 	m := make(map[string]bool)
 	for x := 1; x < 32; x++ {
-		uuid := NewRandom()
+		uuid := New()
 		s := uuid.String()
 		if m[s] {
-			t.Errorf("NewRandom returned duplicated UUID %s\n", s)
+			t.Errorf("New returned duplicated UUID %s\n", s)
 		}
 		m[s] = true
 		if uuid.Variant() != RFC4122 {
 			t.Errorf("Random UUID is variant %d\n", uuid.Variant())
 		}
-		if v, _ := uuid.Version(); v != 4 {
+		if v := uuid.Version(); v != 4 {
 			t.Errorf("Random UUID of version %s\n", v)
 		}
 	}
@@ -83,8 +82,8 @@ func TestRandomUUID(t *testing.T) {
 
 func TestUUIDParse(t *testing.T) {
 	for x := 1; x < 32; x++ {
-		uuid1 := NewRandom()
-		uuid2 := Parse(uuid1.String())
+		uuid1 := New()
+		uuid2 := MustParse(uuid1.String())
 
 		assert.Equal(t, uuid1, uuid2)
 	}
@@ -107,26 +106,25 @@ func TestCoding(t *testing.T) {
 		t.Errorf("%x: urn is %s, expected %s\n", data, v, urn)
 	}
 
-	uuid := Parse(text)
-	if !Equal(uuid, data) {
-		t.Errorf("%s: decoded to %s, expected %s\n", text, uuid, data)
-	}
+	uuid := MustParse(text)
+
+	assert.Equal(t, uuid, data)
 }
 
 func TestNew(t *testing.T) {
-	m := make(map[string]bool)
+	m := make(map[UUID]bool)
 	for x := 1; x < 32; x++ {
 		s := New()
 		if m[s] {
 			t.Errorf("New returned duplicated UUID %s\n", s)
 		}
 		m[s] = true
-		uuid := Parse(s)
-		if uuid == nil {
+		uuid := MustParse(s.String())
+		if uuid == NIL {
 			t.Errorf("New returned %q which does not decode\n", s)
 			continue
 		}
-		if v, _ := uuid.Version(); v != 4 {
+		if v := uuid.Version(); v != 4 {
 			t.Errorf("Random UUID of version %s\n", v)
 		}
 		if uuid.Variant() != RFC4122 {
@@ -188,18 +186,18 @@ var tests = []test{
 }
 
 func testTest(t *testing.T, in string, tt test) {
-	uuid := Parse(in)
-	if ok := (uuid != nil); ok != tt.isuuid {
+	uuid, err := Parse(in)
+	if ok := (err == nil); ok != tt.isuuid {
 		t.Errorf("Parse(%s) got %v expected %v\b", in, ok, tt.isuuid)
 	}
-	if uuid == nil {
+	if err != nil {
 		return
 	}
 
 	if v := uuid.Variant(); v != tt.variant {
 		t.Errorf("Variant(%s) got %d expected %d\b", in, v, tt.variant)
 	}
-	if v, _ := uuid.Version(); v != tt.version {
+	if v := uuid.Version(); v != tt.version {
 		t.Errorf("Version(%s) got %d expected %d\b", in, v, tt.version)
 	}
 }
@@ -211,44 +209,10 @@ func TestUUID(t *testing.T) {
 	}
 }
 
-func TestUUID_Array(t *testing.T) {
-	expect := Array{
-		0xf4, 0x7a, 0xc1, 0x0b,
-		0x58, 0xcc,
-		0x03, 0x72,
-		0x85, 0x67,
-		0x0e, 0x02, 0xb2, 0xc3, 0xd4, 0x79,
-	}
-	uuid := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-	if uuid == nil {
-		t.Fatal("invalid uuid")
-	}
-	if uuid.Array() != expect {
-		t.Fatal("invalid array")
-	}
-}
-
-func TestArray_UUID(t *testing.T) {
-	array := Array{
-		0xf4, 0x7a, 0xc1, 0x0b,
-		0x58, 0xcc,
-		0x03, 0x72,
-		0x85, 0x67,
-		0x0e, 0x02, 0xb2, 0xc3, 0xd4, 0x79,
-	}
-	expect := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-	if expect == nil {
-		t.Fatal("invalid uuid")
-	}
-	if !bytes.Equal(array.UUID(), expect) {
-		t.Fatal("invalid uuid")
-	}
-}
-
 func BenchmarkParse(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		uuid := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-		if uuid == nil {
+		uuid := MustParse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
+		if uuid == NIL {
 			b.Fatal("invalid uuid")
 		}
 	}
@@ -261,8 +225,8 @@ func BenchmarkNew(b *testing.B) {
 }
 
 func BenchmarkUUID_String(b *testing.B) {
-	uuid := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-	if uuid == nil {
+	uuid := MustParse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
+	if uuid == NIL {
 		b.Fatal("invalid uuid")
 	}
 	for i := 0; i < b.N; i++ {
@@ -273,50 +237,12 @@ func BenchmarkUUID_String(b *testing.B) {
 }
 
 func BenchmarkUUID_URN(b *testing.B) {
-	uuid := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-	if uuid == nil {
+	uuid := MustParse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
+	if uuid == NIL {
 		b.Fatal("invalid uuid")
 	}
 	for i := 0; i < b.N; i++ {
 		if uuid.URN() == "" {
-			b.Fatal("invalid uuid")
-		}
-	}
-}
-
-func BenchmarkUUID_Array(b *testing.B) {
-	expect := Array{
-		0xf4, 0x7a, 0xc1, 0x0b,
-		0x58, 0xcc,
-		0x03, 0x72,
-		0x85, 0x67,
-		0x0e, 0x02, 0xb2, 0xc3, 0xd4, 0x79,
-	}
-	uuid := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-	if uuid == nil {
-		b.Fatal("invalid uuid")
-	}
-	for i := 0; i < b.N; i++ {
-		if uuid.Array() != expect {
-			b.Fatal("invalid array")
-		}
-	}
-}
-
-func BenchmarkArray_UUID(b *testing.B) {
-	array := Array{
-		0xf4, 0x7a, 0xc1, 0x0b,
-		0x58, 0xcc,
-		0x03, 0x72,
-		0x85, 0x67,
-		0x0e, 0x02, 0xb2, 0xc3, 0xd4, 0x79,
-	}
-	expect := Parse("f47ac10b-58cc-0372-8567-0e02b2c3d479")
-	if expect == nil {
-		b.Fatal("invalid uuid")
-	}
-	for i := 0; i < b.N; i++ {
-		if !bytes.Equal(array.UUID(), expect) {
 			b.Fatal("invalid uuid")
 		}
 	}

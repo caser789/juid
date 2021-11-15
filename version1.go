@@ -10,10 +10,12 @@ import (
 // be set NewUUID returns nil.  If clock sequence has not been set by
 // SetClockSequence then it will be set automatically.  If GetTime fails to
 // return the current NewUUID returns nil.
+//
+// In most cases, New should be used.
 func NewUUID() (UUID, error) {
 	nodeMu.Lock()
 	if nodeID == zeroID {
-		SetNodeInterface("")
+		setNodeInterface("")
 	}
 	nodeMu.Unlock()
 
@@ -35,4 +37,14 @@ func NewUUID() (UUID, error) {
 	copy(uuid[10:], nodeID[:])
 
 	return uuid, nil
+}
+
+// MustNewUUID returns the Verison 1 UUID from calling NewUUID, or panics
+// if NewUUID fails.
+func MustNewUUID() UUID {
+	uuid, err := NewUUID()
+	if err != nil {
+		panic(err)
+	}
+	return uuid
 }

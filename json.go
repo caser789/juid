@@ -21,9 +21,10 @@ func (u *UUID) UnmarshalJSON(data []byte) error {
 		return errors.New("invalid UUID format")
 	}
 	data = data[1 : len(data)-1]
-	uu := Parse(string(data))
-	if uu == nil {
-		return errors.New("invalid UUID format")
+	uu, err := Parse(string(data))
+	if uu == NIL {
+		return err
+		//return errors.New("invalid UUID format")
 	}
 	*u = uu
 	return nil
