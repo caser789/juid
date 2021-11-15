@@ -30,7 +30,7 @@ func (d Domain) String() string {
 
 // Id returns the id for a Version 2 UUID. Ids are only defined for Vrsion 2
 // UUIDs.
-func (uuid UUID) Id() uint32 {
+func (uuid UUID) ID() uint32 {
 	return binary.BigEndian.Uint32(uuid[0:4])
 }
 

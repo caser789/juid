@@ -43,7 +43,7 @@ func TestUUIDId(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		id := tt.uuid.Id()
+		id := tt.uuid.ID()
 
 		assert.Equal(t, tt.expectedId, id, tt.name)
 	}
@@ -126,7 +126,7 @@ func testDCE(t *testing.T, name string, uuid UUID, domain Domain, id uint32) {
 	if v := uuid.Domain(); v != domain {
 		t.Errorf("%s: %s: expected domain %d, got %d\n", name, uuid, domain, v)
 	}
-	if v := uuid.Id(); v != id {
+	if v := uuid.ID(); v != id {
 		t.Errorf("%s: %s: expected id %d, got %d\n", name, uuid, id, v)
 	}
 }
