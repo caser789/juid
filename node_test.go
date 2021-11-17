@@ -3,6 +3,7 @@ package uuid
 import (
 	"bytes"
 	"github.com/stretchr/testify/assert"
+	"runtime"
 	"testing"
 )
 
@@ -21,8 +22,10 @@ func TestNodeID(t *testing.T) {
 	nid := []byte{1, 2, 3, 4, 5, 6}
 	SetNodeInterface("")
 	s := NodeInterface()
-	if s == "" || s == "user" {
-		t.Errorf("NodeInterface %q after SetInteface\n", s)
+	if runtime.GOARCH != "js" {
+		if s == "" || s == "user" {
+			t.Errorf("NodeInterface %q after SetInterface", s)
+		}
 	}
 	node1 := NodeID()
 	if node1 == nil {
@@ -56,8 +59,10 @@ func TestNode(t *testing.T) {
 	if !SetNodeInterface("") {
 		t.Error("SetNodeInterface failed")
 	}
-	if ni := NodeInterface(); ni == "" {
-		t.Error("NodeInterface returned an empty string")
+	if runtime.GOARCH != "js" {
+		if ni := NodeInterface(); ni == "" {
+			t.Error("NodeInterface returned an empty string")
+		}
 	}
 
 	ni := NodeID()
