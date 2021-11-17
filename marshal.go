@@ -16,9 +16,10 @@ func (uuid *UUID) UnmarshalText(data []byte) error {
 	// See comment in ParseBytes why we do this.
 	// id, err := ParseBytes(data)
 	id, err := ParseBytes(data)
-	if err == nil {
-		*uuid = id
+	if err != nil {
+		return err
 	}
+	*uuid = id
 	return err
 }
 
