@@ -237,3 +237,9 @@ func FromBytes(b []byte) (uuid UUID, err error) {
 	err = uuid.UnmarshalBinary(b)
 	return uuid, err
 }
+
+// IsInvalidLengthError is matcher function for custom error invalidLengthError
+func IsInvalidLengthError(err error) bool {
+	_, ok := err.(invalidLengthError)
+	return ok
+}

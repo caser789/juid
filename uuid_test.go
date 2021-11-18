@@ -315,3 +315,10 @@ func BenchmarkParseLen36Corrupted(b *testing.B) {
 		}
 	}
 }
+
+func TestIsWrongLength(t *testing.T) {
+	_, err := Parse("12345")
+	if !IsInvalidLengthError(err) {
+		t.Errorf("expected error type is invalidLengthError")
+	}
+}
