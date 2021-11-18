@@ -36,3 +36,11 @@ func NewRandomFromReader(r io.Reader) (UUID, error) {
 	uuid[8] = (uuid[8] & 0x3f) | 0x80 // Variant is 10
 	return uuid, nil
 }
+
+// NewString creates a new random UUID and returns it as a string or panics.
+// NewString is equivalent to the expression
+//
+//    uuid.New().String()
+func NewString() string {
+	return Must(NewRandom()).String()
+}
